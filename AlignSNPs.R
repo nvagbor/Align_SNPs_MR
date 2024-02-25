@@ -22,32 +22,28 @@ AlignSNPs <- function(dataset,
                       ){
   
   # Rename old beta.value and preserve them for verification 
-  inputVars <- c(var_beta, 
-                 var_effect_allele, 
-                 var_other_allele,
-                 var_effect_allele_freq)
+  inputVars <- c(var_beta, var_effect_allele, var_other_allele, var_effect_allele_freq)
   
   for (k in inputVars) { dataset[ , paste0(k, ".old")] <- dataset[[k]] }
   
   if(positive_beta){
-    
     df_temp <- dplyr::mutate(
       dataset, 
-      pos_beta = positive_beta,
-      !!var_beta := case_when(.data[[var_beta]] < 0 ~ .data[[var_beta]]*-1, TRUE ~ .data[[var_beta]]), 
-      !!var_effect_allele := case_when(.data[[var_beta]] < 0 ~ .data[[var_other_allele]], TRUE ~ .data[[var_effect_allele]]),
-      !!var_other_allele := case_when(.data[[var_beta]] < 0 ~ .data[[var_effect_allele]], TRUE ~ .data[[var_other_allele]]),
-      !!var_effect_allele_freq := case_when(.data[[var_beta]] < 0 ~ 1 - .data[[var_effect_allele_freq]], TRUE ~ .data[[var_effect_allele_freq]]),
+      pos_beta=positive_beta,
+      !!var_beta:=case_when(.data[[var_beta]]<0~.data[[var_beta]]*-1, TRUE~.data[[var_beta]]), 
+      !!var_effect_allele:=case_when(.data[[var_beta]]<0~.data[[var_other_allele]], TRUE~.data[[var_effect_allele]]),
+      !!var_other_allele:=case_when(.data[[var_beta]]<0~.data[[var_effect_allele]], TRUE~.data[[var_other_allele]]),
+      !!var_effect_allele_freq:=case_when(.data[[var_beta]]<0~1 - .data[[var_effect_allele_freq]], TRUE~.data[[var_effect_allele_freq]]),
     )
     
   }else{
     df_temp <- dplyr::mutate(
       dataset, 
-      pos_beta = positive_beta,
-      !!var_beta := case_when(.data[[var_beta]] > 0 ~ .data[[var_beta]]*-1, TRUE ~ .data[[var_beta]]), 
-      !!var_effect_allele := case_when(.data[[var_beta]] > 0 ~ .data[[var_other_allele]], TRUE ~ .data[[var_effect_allele]]),
-      !!var_other_allele := case_when(.data[[var_beta]] > 0 ~ .data[[var_effect_allele]], TRUE ~ .data[[var_other_allele]]),
-      !!var_effect_allele_freq := case_when(.data[[var_beta]] > 0 ~ 1 - .data[[var_effect_allele_freq]], TRUE ~ .data[[var_effect_allele_freq]]),
+      pos_beta=positive_beta,
+      !!var_beta:=case_when(.data[[var_beta]]>0~.data[[var_beta]]*-1, TRUE~.data[[var_beta]]), 
+      !!var_effect_allele:=case_when(.data[[var_beta]]>0~.data[[var_other_allele]], TRUE~.data[[var_effect_allele]]),
+      !!var_other_allele:=case_when(.data[[var_beta]]>0~.data[[var_effect_allele]], TRUE~.data[[var_other_allele]]),
+      !!var_effect_allele_freq:=case_when(.data[[var_beta]]>0~1 - .data[[var_effect_allele_freq]], TRUE~.data[[var_effect_allele_freq]]),
     )
    
   }
